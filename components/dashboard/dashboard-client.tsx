@@ -13,6 +13,7 @@ import { MetricCard } from "@/components/ui/metric-card";
 import { rollingAverage } from "@/lib/analytics";
 import { generateCoachInsights } from "@/lib/coach";
 import {
+import { supabase } from "@/lib/supabase/client"
   averageScore,
   calculateDailyScore,
   calculateRecoveryScore,
@@ -42,29 +43,6 @@ const [logs, setLogs] = useState<DailyLog[]>([
 ]);
   const [hydrated, setHydrated] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "local">("idle");
-
-useEffect(() => {
-  async function loadLogs() {
-    const { data, error } = await supabase
-      .from("daily_logs")
-      .select("*")
-      .order("log_date", { ascending: true });
-
-    if (error) {
-      console.error(error);
-      setHydrated(true);
-      return;
-    }
-
-    if (data) {
-      setLogs(normalizeLogs(data as DailyLog[]));
-    }
-
-    setHydrated(true);
-  }
-
-  loadLogs();
-}, []);
 
   const todayDate = daysAgo(0);
 
