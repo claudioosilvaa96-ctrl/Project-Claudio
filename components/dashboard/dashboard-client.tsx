@@ -38,8 +38,9 @@ function normalizeLogs(logs: DailyLog[]) {
 }
 
 export function DashboardClient() {
-  const [logs, setLogs] = useState<DailyLog[]>([
-    createEmptyDailyLog(daysAgo(0))]);
+const [logs, setLogs] = useState<DailyLog[]>([
+  createEmptyDailyLog(daysAgo(0)),
+]);
   const [hydrated, setHydrated] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "local">("idle");
 
@@ -101,8 +102,7 @@ const today =
     return () => window.clearTimeout(timeout);
   }, [hydrated, logs, today]);
 
-  function updateToday(nextLog: DailyLog) {
-   function updateToday(nextLog: DailyLog) {
+function updateToday(nextLog: DailyLog) {
   setLogs(current => {
     const exists = current.some(
       log => log.logDate === nextLog.logDate
