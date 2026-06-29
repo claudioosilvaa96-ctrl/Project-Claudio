@@ -26,7 +26,7 @@ const numberFields: Array<{
   { key: "protein", label: "Protein", step: "1", min: 0, suffix: "g" },
   { key: "waterLitres", label: "Water", step: "0.1", min: 0, suffix: "L" },
   { key: "steps", label: "Steps", step: "100", min: 0 },
-  { key: "moneySpent", label: "Money spent", step: "1", min: 0, suffix: "GBP" },
+  { key: "moneySpent", label: "Money spent", step: "1", min: 0, suffix: "€" },
   { key: "salesActivity", label: "Sales activity", step: "1", min: 0 }
 ];
 
@@ -66,27 +66,33 @@ export function DailyCheckIn({
           </span>
         }
       />
+<div className="grid gap-5 lg:grid-cols-2">
+  {numberFields.map((field) => (
+    <label key={field.key} className="grid gap-2">
+      <span className="text-base font-medium text-muted">
+        {field.label}
+      </span>
 
-      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
-        {numberFields.map((field) => (
-          <label key={field.key} className="grid gap-1.5">
-            <span className="text-sm font-medium text-muted">{field.label}</span>
-            <div className="flex min-h-11 items-center rounded-lg border border-line bg-ink/[0.03] px-3 transition focus-within:border-brand dark:bg-white/[0.04]">
-              <input
-                className="min-w-0 flex-1 bg-transparent text-base font-semibold text-ink outline-none"
-                type="number"
-                value={log[field.key]}
-                step={field.step}
-                min={field.min}
-                max={field.max}
-                onChange={(event) => updateNumber(field.key, event.target.value)}
-              />
-              {field.suffix ? <span className="text-sm text-muted">{field.suffix}</span> : null}
-            </div>
-          </label>
-        ))}
+      <div className="flex h-14 items-center rounded-xl border border-line bg-panel px-4">
+        <input
+          className="w-full bg-transparent text-lg font-semibold outline-none"
+          type="number"
+          value={log[field.key]}
+          step={field.step}
+          min={field.min}
+          max={field.max}
+          onChange={(event) => updateNumber(field.key, event.target.value)}
+        />
+
+        {field.suffix && (
+          <span className="ml-3 whitespace-nowrap text-sm text-muted">
+            {field.suffix}
+          </span>
+        )}
       </div>
-
+    </label>
+  ))}
+</div>
       <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-5">
         {toggles.map((toggle) => {
           const Icon = toggle.icon;
@@ -112,8 +118,8 @@ export function DailyCheckIn({
       </div>
 
       <div className="mt-4 grid gap-3">
-        <label className="grid gap-1.5">
-          <span className="text-sm font-medium text-muted">Notes</span>
+        <label className="flex flex-col gap-2">
+          <span className="text-base font-medium text-muted">Notes</span>
           <textarea
             value={log.notes}
             onChange={(event) => onChange({ ...log, notes: event.target.value })}
