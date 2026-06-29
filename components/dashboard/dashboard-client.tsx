@@ -12,7 +12,6 @@ import { Card } from "@/components/ui/card";
 import { MetricCard } from "@/components/ui/metric-card";
 import { rollingAverage } from "@/lib/analytics";
 import { generateCoachInsights } from "@/lib/coach";
-import { getDemoDailyLogs, getDemoFinanceSnapshots } from "@/lib/sample-data";
 import {
   averageScore,
   calculateDailyScore,
@@ -44,13 +43,28 @@ const [logs, setLogs] = useState<DailyLog[]>([
   const [hydrated, setHydrated] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "local">("idle");
 
-  useEffect(() => {
-    const stored = window.localStorage.getItem(storageKey);
-    if (stored) {
-      setLogs(normalizeLogs(JSON.parse(stored) as DailyLog[]));
+useEffect(() => {
+  async function loadLogs() {
+    const { data, error } = await supabase
+      .from("daily_logs")
+      .select("*")
+      .order("log_date", { ascending: true });
+
+    if (error) {
+      console.error(error);
+      setHydrated(true);
+      return;
     }
+
+    if (data) {
+      setLogs(normalizeLogs(data as DailyLog[]));
+    }
+
     setHydrated(true);
-  }, []);
+  }
+
+  loadLogs();
+}, []);
 
   const todayDate = daysAgo(0);
 
@@ -64,7 +78,10 @@ const today =
   const monthAverage = averageScore(logs, 30, defaultSettings);
   const streak = currentStreak(logs, defaultSettings);
 
-  const coachInsights = useMemo(() => generateCoachInsights(logs, getDemoFinanceSnapshots(), defaultSettings), [logs]);
+ const coachInsights = useMemo(
+  () => generateCoachInsights(logs, [], defaultSettings),
+  [logs]
+);
 
   const scoreTrend = useMemo(() => {
     const recent = logs.slice(-14);
@@ -80,6 +97,7 @@ const today =
     }));
   }, [logs]);
 
+  import { supabase } from "@/lib/supabase/client";
   useEffect(() => {
     if (!hydrated) return;
 

@@ -1,4 +1,4 @@
-import type { CoachInsight, DailyLog, FinanceSnapshot, UserSettings } from "@/lib/types";
+import type { CoachInsight, DailyLog, UserSettings } from "@/lib/types";
 import { defaultSettings } from "@/lib/scoring";
 
 function average(values: number[]) {
@@ -8,7 +8,6 @@ function average(values: number[]) {
 
 export function generateCoachInsights(
   logs: DailyLog[],
-  finance: FinanceSnapshot[] = [],
   settings: UserSettings = defaultSettings
 ): CoachInsight[] {
   const insights: CoachInsight[] = [];
@@ -51,22 +50,6 @@ export function generateCoachInsights(
         "A lower mood day is a signal to reduce the load, not to quit. Water, a walk, family, and no unnecessary spending is a successful day.",
       tone: "recover"
     });
-  }
-
-  const latestFinance = finance.at(-1);
-  const previousFinance = finance.at(-2);
-  if (latestFinance && previousFinance) {
-    const latestSaving = latestFinance.monthlyIncome - latestFinance.monthlySpending;
-    const previousSaving = previousFinance.monthlyIncome - previousFinance.monthlySpending;
-
-    if (latestSaving < previousSaving) {
-      insights.push({
-        title: "Savings slowed, but the system is still working",
-        body:
-          "One slower month does not break the house deposit plan. Pick one spending leak to close and keep the mortgage fund contribution automatic.",
-        tone: "encourage"
-      });
-    }
   }
 
   if (!insights.length) {
