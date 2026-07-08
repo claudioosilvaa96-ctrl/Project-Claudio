@@ -161,9 +161,9 @@ if (data) {
   const monthAverage = averageScore(logs, 30, defaultSettings);
 
   const coachInsights = useMemo(
-    () => generateCoachInsights(logs, [], defaultSettings),
-    [logs]
-  );
+  () => generateCoachInsights(logs, defaultSettings),
+  [logs]
+);
 
   const scoreTrend = useMemo(() => {
     const recent = logs.slice(-14);
