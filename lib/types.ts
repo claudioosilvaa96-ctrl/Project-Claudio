@@ -18,6 +18,7 @@ export type DailyLog = {
   timeWithFamily: boolean;
   notes: string;
   badDay: boolean;
+  createdAt?: string;
   updatedAt?: string;
 };
 
