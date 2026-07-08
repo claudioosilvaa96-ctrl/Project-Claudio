@@ -1,3 +1,4 @@
+import { randomUUID } from "crypto";
 import type { DailyLog, DailyScore, ScoreBreakdownItem, UserSettings } from "@/lib/types";
 import { clamp } from "@/lib/utils";
 
@@ -18,23 +19,34 @@ export const defaultSettings: UserSettings = {
 
 export function createEmptyDailyLog(logDate: string): DailyLog {
   return {
+    id: crypto.randomUUID(),
+    userId: "",
+
     logDate,
+
     weightKg: 88,
     mood: 7,
     sleepHours: 7,
+
     calories: defaultSettings.calorieTarget,
     protein: defaultSettings.proteinTarget,
     waterLitres: 2.5,
     steps: 8000,
+
     gym: false,
     football: false,
     mobility: false,
+
     moneySpent: 0,
     unnecessarySpending: false,
     salesActivity: 0,
     timeWithFamily: false,
+
     notes: "",
-    badDay: false
+    badDay: false,
+
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 }
 
