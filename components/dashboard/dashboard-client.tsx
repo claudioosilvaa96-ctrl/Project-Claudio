@@ -53,6 +53,7 @@ function normalizeLogs(logs: DailyLog[]) {
 }
 
 export function DashboardClient() {
+  const supabase = createSupabaseBrowserClient();
   const [logs, setLogs] = useState<DailyLog[]>([
     createEmptyDailyLog(daysAgo(0)),
   ]);
@@ -65,6 +66,10 @@ export function DashboardClient() {
   const [userId, setUserId] = useState<string | null>(null);
   useEffect(() => {
   async function loadUser() {
+    if (!supabase) {
+  setHydrated(true);
+  return;
+}
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -79,9 +84,15 @@ export function DashboardClient() {
 
 useEffect(() => {
   async function loadLogs() {
- const {
-  data: { user },
-} = await supabase.auth.getUser();
+
+    if (!supabase) {
+      setHydrated(true);
+      return;
+    }
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
 if (!user) {
   setHydrated(true);
@@ -184,6 +195,9 @@ useEffect(() => {
  if (!hydrated || !userId) return;
 
   async function saveLogs() {
+
+    if (!supabase) return;
+
     setSaveStatus("saving");
 
     const rows = logs.map((log) => ({
@@ -232,7 +246,7 @@ useEffect(() => {
 
   saveLogs();
 
-}, [logs, hydrated]);
+}, [logs, hydrated,usedId]);
 
   function updateToday(nextLog: DailyLog) {
     setLogs((current) => {
