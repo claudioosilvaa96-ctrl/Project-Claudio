@@ -25,19 +25,28 @@ export function LoginPanel() {
     if (error) setStatus(error.message);
   }
 
-  async function emailLogin() {
-    if (!supabase) {
-      setStatus("Add Supabase environment keys to enable email login.");
-      return;
-    }
+async function emailLogin() {
+  console.log("Email login clicked");
 
-    const { error } = await supabase.auth.signInWithOtp({
-      email,
-      options: { emailRedirectTo: window.location.origin + "/auth/callback" }
-    });
-
-    setStatus(error ? error.message : "Check your email for a secure sign-in link.");
+  if (!supabase) {
+    console.log("No supabase client");
+    setStatus("Add Supabase environment keys to enable email login.");
+    return;
   }
+
+  console.log("Supabase client exists");
+
+  const { error } = await supabase.auth.signInWithOtp({
+    email,
+    options: {
+      emailRedirectTo: window.location.origin + "/auth/callback",
+    },
+  });
+
+  console.log("OTP error:", error);
+
+  setStatus(error ? error.message : "Check your email for a secure sign-in link.");
+}
 
   return (
     <Card className="mx-auto max-w-xl">
