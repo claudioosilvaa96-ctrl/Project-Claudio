@@ -246,7 +246,7 @@ useEffect(() => {
 
   saveLogs();
 
-}, [logs, hydrated,usedId]);
+}, [logs, hydrated,userId]);
 
   function updateToday(nextLog: DailyLog) {
     setLogs((current) => {
