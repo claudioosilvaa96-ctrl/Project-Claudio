@@ -192,11 +192,18 @@ if (data) {
   }, [logs]);
 
 useEffect(() => {
+  console.log("Save effect fired"); 
+  console.log("hydrated:", hydrated);
+  console.log("userId:", userId);
  if (!hydrated || !userId) return;
 
   async function saveLogs() {
+    console.log("Inside saveLogs");
 
-    if (!supabase) return;
+    if (!supabase) {
+  console.log("No supabase client");
+  return;
+}
 
     setSaveStatus("saving");
 
